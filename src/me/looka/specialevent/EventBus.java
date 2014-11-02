@@ -12,7 +12,6 @@ import me.looka.specialevent.types.Event;
 /**
  * @author lucamasira
  * This class is the base class to handle events.<br>
- * All the methods in this method are since it doesn't make sense to have more than 1 EventBus instance.
  * 
  */
 public class EventBus {
@@ -25,10 +24,10 @@ public class EventBus {
 			new HashMap<Class<? extends Event>, List<EventSubscriber>>();
 	
 	/**
-	 * Protected constructor.
+	 * Public.
 	 */
-	protected EventBus() {
-		throw new RuntimeException();
+	public EventBus() {
+
 	}
 	
 	/**
