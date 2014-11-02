@@ -6,7 +6,7 @@ import me.looka.specialevent.EventBus;
 import me.looka.specialplugin.PluginManager.PropertyNames;
 import me.looka.specialplugin.events.EventPluginChangeState;
 import me.looka.specialplugin.interfaces.IPluggable;
-import me.looka.specialplugin.sql.JDBCPluginDatabase;
+import me.looka.specialsql.JDBCPluginDatabase;
 import me.looka.specialutil.Configuration;
 
 /**

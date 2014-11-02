@@ -20,7 +20,7 @@ import me.looka.specialplugin.crypto.IKeyProvider;
 import me.looka.specialplugin.events.EventPluginLoaded;
 import me.looka.specialplugin.events.EventPluginPreLoad;
 import me.looka.specialplugin.events.EventPluginUnload;
-import me.looka.specialplugin.sql.JDBCPluginDatabase;
+import me.looka.specialsql.JDBCPluginDatabase;
 import me.looka.specialutil.Configuration;
 
 /**

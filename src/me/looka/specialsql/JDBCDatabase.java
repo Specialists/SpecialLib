@@ -1,4 +1,4 @@
-package me.looka.specialplugin.sql;
+package me.looka.specialsql;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
