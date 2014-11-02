@@ -39,6 +39,8 @@ public class Plugin implements IPluggable{
 	 */
 	private JDBCPluginDatabase database;
 	
+	private EventBus eventBus;
+	
 	
 	/**
 	 * Normal constructor
@@ -88,6 +90,11 @@ public class Plugin implements IPluggable{
 		//is already in the same state, return. Don't fire event before this.
 		if(isEnabled() == state)
 			return;
+		
+		EventPluginChangeState eventChange = new EventPluginChangeState(this);
+		if(getEventBus().post(eventChange).isCancelled()) {
+			return;
+		}
 		
 		//toggle the plugin depending on the new state, also sets the new state.
 		if(enabled = state)
@@ -161,5 +168,21 @@ public class Plugin implements IPluggable{
 	 */
 	public String getName() {
 		return getPluginConfiguration().getString(PropertyNames.PLUGIN_NAME);
+	}
+
+	/**
+	 * The eventbus used for the plugin.
+	 * @return the eventbus
+	 */
+	public EventBus getEventBus() {
+		return eventBus;
+	}
+
+	/**
+	 * Set the eventbus that will be used for this plugin
+	 * @param eventBus the eventbus to use.
+	 */
+	public void setEventBus(EventBus eventBus) {
+		this.eventBus = eventBus;
 	}
 }

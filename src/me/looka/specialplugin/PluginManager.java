@@ -58,10 +58,21 @@ public class PluginManager {
 	 */
 	private PluginClassLoader pluginClassLoader = new PluginClassLoader();
 	
+	private EventBus eventBus;
+	
 	/**
-	 * Constructor that will be using the default settings
+	 * Constructor that uses its own eventbus.
 	 */
 	public PluginManager() {
+		this(new EventBus());
+	}
+	
+	/**
+	 * Constructor with an eventbus
+	 * @param eventBus
+	 */
+	public PluginManager(EventBus eventBus) {
+		this.setEventBus(eventBus);
 	}
 	
 	/**
@@ -142,7 +153,7 @@ public class PluginManager {
 		if(LOADED_PLUGINS.size() > getMaximumAllowedPlugins())
 			throw new Exception("Too many loaded plugins.");
 		
-		if(file == null)//file needs to to be not null
+		if(file == null)//file needs to to be not null, couldnt use @NotNull
 			throw new NullPointerException();
 		
 		JarFile jarFile = new JarFile(file);
@@ -155,6 +166,13 @@ public class PluginManager {
 		pluginConfiguration.load(jarFile.getInputStream(propertiesFile));
 		
 		String mainClassPath = pluginConfiguration.getString(PropertyNames.PLUGIN_MAIN);
+		
+		EventPluginPreLoad eventPreLoad = new EventPluginPreLoad(
+				pluginConfiguration.getProperty(PropertyNames.PLUGIN_NAME), mainClassPath);
+		
+		if(getEventBus().post(eventPreLoad).isCancelled()) {
+			return null;
+		}
 		
 		//check if the plugin works on the current os
 		if(pluginConfiguration.containsKey(PropertyNames.PLUGIN_OS)) {
@@ -178,6 +196,7 @@ public class PluginManager {
 		Plugin plugin = pluginClassLoader.loadClass(mainClassPath).asSubclass(Plugin.class).newInstance();
 		plugin.setPluginConfiguration(pluginConfiguration);
 		plugin.setDataFolder(new File(pluginFolder, plugin.getName() + File.separator));
+		plugin.setEventBus(getEventBus());
 		//could probably fit in some other method/make nicer.
 		if(pluginConfiguration.containsKey(PropertyNames.PLUGIN_SQL_DB_ENABLE)) {
 			if(pluginConfiguration.getBoolean(PropertyNames.PLUGIN_SQL_DB_ENABLE)) {
@@ -188,6 +207,8 @@ public class PluginManager {
 		if(addPlugin(plugin)) {
 			plugin.onLoad();
 		}
+		EventPluginLoaded eventLoaded = new EventPluginLoaded(plugin);
+		getEventBus().post(eventLoaded);
 		return plugin;
 	}
 	
@@ -261,11 +282,16 @@ public class PluginManager {
 	}
 	
 	/**
-	 * Will remove the plugin from the loadedPlugins list.<br>
-	 * It will also set the plugin object to null.
+	 * THIS METHOD WILL NOT UNLOAD THE JAR! READ THIS
+	 * It will set the plugin opbject to null and remove the plugin.<br>
+	 * Cba to handle PluginClassLoader arrays so I can actually unload it.
 	 * @param plugin the plugin to be unloaded.
 	 */
 	public void unloadPlugin(Plugin plugin) {		
+		EventPluginUnload eventUnload = new EventPluginUnload(plugin);
+		if(getEventBus().post(eventUnload).isCancelled()) {
+			return;
+		}
 		plugin.setEnabled(false);
 		LOADED_PLUGINS.remove(NAME_INDEX.get(plugin.getName().toLowerCase()));
 		plugin = null;
@@ -397,6 +423,22 @@ public class PluginManager {
 		this.pluginClassLoader = pluginClassLoader;
 	}
 	
+	/**
+	 * Get the eventbus all plugins will use.
+	 * @return
+	 */
+	public EventBus getEventBus() {
+		return eventBus;
+	}
+
+	/**
+	 * Set the eventbus all plugins will use.
+	 * @param eventBus
+	 */
+	public void setEventBus(EventBus eventBus) {
+		this.eventBus = eventBus;
+	}
+
 	/**
 	 * @author Luca
 	 * Inner class which contains a bunch of strings like "plugin.name"
