@@ -39,8 +39,6 @@ Both libraries can be found in the lib folder.
 
 ## Credits
 
-https://code.msdn.microsoft.com/windowshardware/Kbfiltr-WDF-Version-685ff5c4 for C++ keylogging
-
 http://frommyplayground.com/how-to-load-native-jni-library-from-jar - NativeUtils
 
 ## Licensing
