@@ -16,6 +16,11 @@ SpecialPlugin allows modularity in applications. Together with SpecialEvent make
 
 SpecialUtil is a library that contains some utility methods that the library needs/that you can use.
 
+## SpecialNative
+
+SpecialNative brings native-only features to Java by using JNI with JNA.
+I barely have any knowledge of C so please contact me if you know C & JNI(Specialists only).
+
 ## Feature Request
 
 If you have any feature requests please pull a request or pm me on HF.
@@ -31,6 +36,12 @@ This library does not need any dependencies other than the JVM. However if you w
 If you want to run scala plugins you have to add the scala runtime to your buildpath.
 
 Both libraries can be found in the lib folder.
+
+## Credits
+
+https://code.msdn.microsoft.com/windowshardware/Kbfiltr-WDF-Version-685ff5c4 for C++ keylogging
+
+http://frommyplayground.com/how-to-load-native-jni-library-from-jar - NativeUtils
 
 ## Licensing
 
