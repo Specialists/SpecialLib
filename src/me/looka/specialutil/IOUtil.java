@@ -78,7 +78,13 @@ public class IOUtil {
 	public static byte[] toByteArray(InputStream in) {
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		copy(in, baos);
-		return baos.toByteArray();
+		byte[] bytes = baos.toByteArray();
+		try {
+			baos.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return bytes;
 	}
 	
 	/**
@@ -107,6 +113,35 @@ public class IOUtil {
 	 */
 	public static void copy(InputStream source, Writer dest) {
 		copy(source, dest);
+	}
+	
+	public static byte[] readFromCurrentJar(String filename) {
+		if(!StringUtil.isEmpty(filename)) {
+			if(!filename.startsWith("/")) {
+				filename = "/" + filename;
+			}
+			
+			InputStream is = IOUtil.class.getResourceAsStream(filename);
+			byte[] bytes = toByteArray(is);
+			try {
+				is.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			return bytes;
+		}
+		
+		return null;
+	}
+	
+	/**
+	 * Add two bytes together to get an int. USES BIG ENDIAN
+	 * @param b1 the first byte
+	 * @param b2 the second byte
+	 * @return the int created from the bytes
+	 */
+	public static int getIntBigEndian(byte b1, byte b2) {
+		return b1 << 8 | b2;
 	}
 
 }

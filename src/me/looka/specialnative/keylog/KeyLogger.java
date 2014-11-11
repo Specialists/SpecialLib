@@ -17,7 +17,7 @@ public class KeyLogger {
 	
 	private KeyLogger() {
 		try {
-			NativeUtils.loadLibraryFromJar(Platform.isWindows() ? "/natives/JNIKeyloggerWIN.dll" : "/natives/JNIKeyloggerUNIX");
+			NativeUtils.loadLibraryFromJar(Platform.isWindows() ? "/natives/JNIKeyloggerWIN" : "/natives/JNIKeyloggerNIX");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
